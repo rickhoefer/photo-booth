@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Master Green Screen</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="css/portfolio-item.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+    <!-- Page Content -->
+    <div class="container">
+      <!-- Portfolio Item Heading -->
+      <h1 class="my-4">Master Green Screen
+      </h1>
+
+      <!-- Portfolio Item Row -->
+      <div class="row">
+
+        <div class="col-md-8">
+          <img class="img-fluid" src="http://placehold.it/600x375" alt="">
+        </div>
+
+        <div class="col-md-4">
+		  <button class="btn btn-primary take-photo">Take Photo</button>		
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam viverra euismod odio, gravida pellentesque urna varius vitae. Sed dui lorem, adipiscing in adipiscing et, interdum nec metus. Mauris ultricies, justo eu convallis placerat, felis enim.</p>
+        </div>
+
+      </div>
+      <!-- /.row -->
+
+      <!-- Related Projects Row -->
+      <h3 class="my-4">Latest Pictures</h3>
+
+<div class="row">
+		{% for pic in pics %}
+		   <div class="col-md-3 col-sm-6 mb-4">
+				<img class="img-fluid loadImage" src="{{pic}}" data-name="{{pic}}">
+			</div>
+		{% else %}
+		  <li>There are no photos right now, get to snappin'!</li>
+		{% endfor %}
+</div>
+
+    </div>
+    <!-- /.container -->
+	 
+    <!-- Footer -->
+    <footer class="py-5 bg-dark">
+      <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; Master Green Screen 2017</p>
+      </div>
+      <!-- /.container -->
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="js/jquery.min.js"></script>
+	   <script src="js/popper.js"></script>
+    <script src="js/bootstrap.js"></script>
+	<script src="js/bootbox.min.js"></script>
+	  
+	  <script type="text/javascript">
+		  <!--
+			  
+			$(".loadImage").click(function(e) {
+			  
+			  	var attr = $(this).attr('data-name');
+				var name = attr.substring(0, attr.indexOf("."));
+			  
+				var dialog = bootbox.dialog({
+					message: " Loading... ",
+					size: "large",
+						buttons: {
+							cancel: {
+								label: "Print",
+								className: 'btn-primary pull-left',
+								callback: function(){
+								}
+							}
+						}
+					});
+			  
+			    $(".bootbox-body").html("<div class='img-responsive text-center' style='height:500px;'><img  /></div>");
+			  
+			  	var i = 0;
+				var interval = setInterval(function() {	
+					
+					var img = $("<img height='60px' width='60px' class='thumbIcons pull-left' />").attr("src", "/" + name + "/" + i + ".png").error(function() {
+						
+						$(this).remove();
+						clearInterval(interval);
+						
+						$("body").on("click", ".thumbIcons", function() {
+							$(".bootbox-body img").attr("src", $(this).attr('src'));
+						});
+						
+						$(".thumbIcons").first().click();
+					});
+
+					i++;
+
+					$(".modal-footer").append(img);
+
+				}, 100);		
+		  	});
+		  
+		  $(".take-photo").click(function() {
+			 $.get( "/takePic" )
+		  });
+		  -->
+	  </script>
+  </body>
+
+</html>
