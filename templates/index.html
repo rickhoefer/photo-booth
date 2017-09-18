@@ -3,7 +3,6 @@
 
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
 
@@ -12,59 +11,48 @@
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom styles for this template -->
-    <link href="css/portfolio-item.css" rel="stylesheet">
-  </head>
-
+     <link href="css/portfolio-item.css" rel="stylesheet">
+  </head>	
+  
   <body>
-
-    <!-- Page Content -->
-    <div class="container">
-      <!-- Portfolio Item Heading -->
-      <h1 class="my-4">Master Green Screen
-      </h1>
-
-      <!-- Portfolio Item Row -->
-      <div class="row">
-
-        <div class="col-md-8">
-          <img class="img-fluid" src="http://placehold.it/600x375" alt="">
-        </div>
-
-        <div class="col-md-4">
-		  <button class="btn btn-primary take-photo">Take Photo</button>		
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam viverra euismod odio, gravida pellentesque urna varius vitae. Sed dui lorem, adipiscing in adipiscing et, interdum nec metus. Mauris ultricies, justo eu convallis placerat, felis enim.</p>
-        </div>
-
-      </div>
-      <!-- /.row -->
-
-      <!-- Related Projects Row -->
-      <h3 class="my-4">Latest Pictures</h3>
-
-<div class="row">
-		{% for pic in pics %}
-		   <div class="col-md-3 col-sm-6 mb-4">
-				<img class="img-fluid loadImage" src="{{pic}}" data-name="{{pic}}">
-			</div>
-		{% else %}
-		  <li>There are no photos right now, get to snappin'!</li>
-		{% endfor %}
-</div>
-
-    </div>
-    <!-- /.container -->
+	  
+		<button class="pull-right btn btn-success takePhoto"> Take Photo </button>
 	 
-    <!-- Footer -->
-    <footer class="py-5 bg-dark">
-      <div class="container">
-        <p class="m-0 text-center text-white">Copyright &copy; Master Green Screen 2017</p>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-bottom">
+      <a class="navbar-brand" href="#">Master Green Screen</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Capture <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/pics">Images</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Configuration</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+            <div class="dropdown-menu" aria-labelledby="dropdown01">
+              <a class="dropdown-item" href="#">Action</a>
+              <a class="dropdown-item" href="#">Another action</a>
+              <a class="dropdown-item" href="#">Something else here</a>
+            </div>
+          </li>
+        </ul>
+ 
       </div>
-      <!-- /.container -->
-    </footer>
+    </nav>
+    
+  </body>
 
     <!-- Bootstrap core JavaScript -->
     <script src="js/jquery.min.js"></script>
-	   <script src="js/popper.js"></script>
+	<script src="js/popper.js"></script>
     <script src="js/bootstrap.js"></script>
 	<script src="js/bootbox.min.js"></script>
 	  
@@ -113,11 +101,11 @@
 				}, 100);		
 		  	});
 		  
-		  $(".take-photo").click(function() {
-			 $.get( "/takePic" )
+		  $(".takePhoto").click(function() {
+			 $.get( "/takePic" , function(data) {
+				console.log(data);
+			 });
 		  });
 		  -->
 	  </script>
-  </body>
-
 </html>

@@ -5,16 +5,34 @@
  */
 
 body {
-    padding-top: 20px;
+  background: url('http://localhost:8080/?action=stream') no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+  -o-background-size: cover;
 }
 
-@media (min-width: 992px) {
-    body {
-        padding-top: 20px;
-    }
+html {
+  position: relative;
+  min-height: 100%;
 }
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 45px;
+  background-color: #f5f5f5;
+}
+
 
 .bootbox-body img {
 	max-height: 100%;
     max-width: 100%;
 }
+
+.takePhoto {
+position:absolute;
+bottom:70px;
+right:10px;
+font-size:25px;

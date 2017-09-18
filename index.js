@@ -16,7 +16,7 @@ app.set('views',  __dirname + '/templates');
 
 app.use(express.static('public'));
 
-app.use(express.static('pics'))
+app.use(express.static('pics'));
 
 var njk = expressNunjucks(app, {
     watch: true,
@@ -25,43 +25,45 @@ var njk = expressNunjucks(app, {
  
 app.get('/', (req, res) => {
 	
+	startStreaming();
+    res.render('index');
 	
+});
+
+app.get('/pics', (req, res) => {
+
 	var pics = fs.readdirSync("./pics").filter(function(file) {
 		return file.includes(".") && !file.includes("DS");
 	});
 	
-    res.render('index', {
+	res.render('pics', {
 		pics: pics
 	});
 	
-});
-
-app.get('/get/:pic', (req, res) => {
+});	
 	
-	var pics = fs.readdirSync("./pics/" + req.params.pic ).filter(function(file) {
+app.get('/pics/:pic', (req, res) => {
+	
+	
+    var pics = fs.readdirSync("./pics").filter(function(file) {
 		return file.includes(".") && !file.includes("DS");
 	});
 	
-	
-    res.json('index', {
-		pics: pics
+	res.render('pic', {
+		pic: pic
 	});
 	
 });
 
 
 app.get('/takePic', (req, res) => {
+	var filename = uuid() + ".jpg"
+	var cmd = "wget http://localhost:8080/?action=snapshot -O " + __dirname + "/pics/" + filename;
+	shell.exec(cmd);
 	
-	/*var camera = new RaspiCam({ 
-		mode: "photo", 
-		output: "/pics/" + uuid() + ".jpg" 
-		quality: 100
-	});
+	stopStreaming();
 	
-	camera.start();
-	camera.stop();*/
-	
-	res.json();
+	res.json({img : filename});
 	
 });
 
@@ -108,11 +110,15 @@ watcher.on('add', pathToFile => {
 				
 				var outputImage = destination + "/" + i + ".png";
 				var background = "./backgrounds/" + file;
-				var cmd = 'magick ' + background + ' ' + output + ' -gravity south -composite ' + outputImage
+				var cmd = 'convert ' + background + ' ' + output + ' -gravity south -composite ' + outputImage
 		
 				shell.exec(cmd);
+				console.log("Processing Image " + i + " of " + files.length);
 		  	});
 			
+			// After processing is finished, let's start up mjpg_streamer and raspistill.
+			
+			startStreaming();
 		});
 	}).catch(function(err) {
 		console.log(err);
@@ -125,5 +131,21 @@ watcher.on('add', pathToFile => {
 
 app.listen(3000, function() {
 	console.log("Running!");
+	startStreaming();
 });
 
+function startStreaming() {
+  console.log("Attempting to start streaming");
+  
+  shell.exec("raspistill --nopreview -w 1920 -h 1080 -q 100 -o /tmp/stream/pic.jpg -tl 1 -t 9999999 -th 0:0:0 -br 60 &", {async:true, silent: true});
+  console.log("raspistill started");
+  shell.exec('LD_LIBRARY_PATH=/usr/local/lib mjpg_streamer -i "input_file.so -f /tmp/stream -n pic.jpg" -o "output_http.so -w /usr/local/www" &', {async:true, silent:true});
+  console.log("mjpg_streamer started");
+
+}
+
+function stopStreaming() {
+	// Kill the streamer to free up some processing power.
+	shell.exec("pkill raspistill")
+	shell.exec("pkill mjpg_streamer");
+}
