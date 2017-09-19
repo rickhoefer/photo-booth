@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Master Green Screen</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+     <link href="css/portfolio-item.css" rel="stylesheet">
+  </head>	
+  
+  <body>
+	  <div class="container">
+			{% block body %}
+				
+			{% endblock %}
+	  </div>
+	 
+	<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-bottom">
+      <a class="navbar-brand" href="#">Master Green Screen</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Capture <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/pics">Images</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Configuration</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+            <div class="dropdown-menu" aria-labelledby="dropdown01">
+              <a class="dropdown-item" href="#">Action</a>
+              <a class="dropdown-item" href="#">Another action</a>
+              <a class="dropdown-item" href="#">Something else here</a>
+            </div>
+          </li>
+        </ul>
+ 
+      </div>
+    </nav>
+    
+  </body>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="js/jquery.min.js"></script>
+	<script src="js/popper.js"></script>
+    <script src="js/bootstrap.js"></script>
+	<script src="js/bootbox.min.js"></script>
+	  
+	  {% block script %}
+				
+	  {% endblock %}
+</html>

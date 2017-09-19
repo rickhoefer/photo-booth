@@ -1,111 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "main.html" %}
 
-  <head>
-    <meta charset="utf-8">
-    <meta name="description" content="">
-    <meta name="author" content="">
+{% block body %}
 
-    <title>Master Green Screen</title>
+	<button class="btn btn-success takePhoto">Take Photo</button>
+	
+{% endblock %}
 
-    <!-- Bootstrap core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <!-- Custom styles for this template -->
-     <link href="css/portfolio-item.css" rel="stylesheet">
-  </head>	
-  
-  <body>
-	  
-		<button class="pull-right btn btn-success takePhoto"> Take Photo </button>
-	 
-<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-bottom">
-      <a class="navbar-brand" href="#">Master Green Screen</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+{% block script %}
 
-      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="#">Capture <span class="sr-only">(current)</span></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/pics">Images</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Configuration</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-            <div class="dropdown-menu" aria-labelledby="dropdown01">
-              <a class="dropdown-item" href="#">Action</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <a class="dropdown-item" href="#">Something else here</a>
-            </div>
-          </li>
-        </ul>
- 
-      </div>
-    </nav>
-    
-  </body>
-
-    <!-- Bootstrap core JavaScript -->
-    <script src="js/jquery.min.js"></script>
-	<script src="js/popper.js"></script>
-    <script src="js/bootstrap.js"></script>
-	<script src="js/bootbox.min.js"></script>
-	  
-	  <script type="text/javascript">
-		  <!--
-			  
-			$(".loadImage").click(function(e) {
-			  
-			  	var attr = $(this).attr('data-name');
-				var name = attr.substring(0, attr.indexOf("."));
-			  
-				var dialog = bootbox.dialog({
-					message: " Loading... ",
-					size: "large",
+	<script type="text/javascript">
+		<!--
+			$("body").css("background", "url('http://localhost:8080/?action=stream') no-repeat center center fixed");
+			
+			$(".takePhoto").on("click", function() {
+				$.get("/takePic", function(data) {
+					var file = data.img;
+					bootbox.dialog({
+						size: "large",
+						title: 'Save this photo?',
+						message: " ",
 						buttons: {
-							cancel: {
-								label: "Print",
-								className: 'btn-primary pull-left',
+							save: {
+								label: "Yes",
+								className: 'btn-danger',
 								callback: function(){
+									$.get("/save/" + file);
+									
+									window.location = "/pics/" + file;	
 								}
-							}
+							},
+							cancel: {
+								label: "Nope",
+								className: 'btn-warning',
+								callback: function(){
+									$.get("/delete/:pic");
+								}
+							},
 						}
 					});
-			  
-			    $(".bootbox-body").html("<div class='img-responsive text-center' style='height:500px;'><img  /></div>");
-			  
-			  	var i = 0;
-				var interval = setInterval(function() {	
 					
-					var img = $("<img height='60px' width='60px' class='thumbIcons pull-left' />").attr("src", "/" + name + "/" + i + ".png").error(function() {
-						
-						$(this).remove();
-						clearInterval(interval);
-						
-						$("body").on("click", ".thumbIcons", function() {
-							$(".bootbox-body img").attr("src", $(this).attr('src'));
-						});
-						
-						$(".thumbIcons").first().click();
-					});
+					$(".modal-body").html("<img class='img-fluid' src='/" + file +"' />");
+					
+				});
+			});
+			
+			
+		-->
+	</script>
 
-					i++;
 
-					$(".modal-footer").append(img);
-
-				}, 100);		
-		  	});
-		  
-		  $(".takePhoto").click(function() {
-			 $.get( "/takePic" , function(data) {
-				console.log(data);
-			 });
-		  });
-		  -->
-	  </script>
-</html>
+{% endblock %}

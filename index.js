@@ -30,7 +30,7 @@ app.get('/', (req, res) => {
 	
 });
 
-app.get('/pics', (req, res) => {
+app.get('/pictures', (req, res) => {
 
 	var pics = fs.readdirSync("./pics").filter(function(file) {
 		return file.includes(".") && !file.includes("DS");
@@ -42,9 +42,8 @@ app.get('/pics', (req, res) => {
 	
 });	
 	
-app.get('/pics/:pic', (req, res) => {
-	
-	
+app.get('/pics/get/:pic', (req, res) => {
+
     var pics = fs.readdirSync("./pics").filter(function(file) {
 		return file.includes(".") && !file.includes("DS");
 	});
@@ -55,11 +54,22 @@ app.get('/pics/:pic', (req, res) => {
 	
 });
 
+app.get('/stream/start', (req, res) => {
+    startStreaming();
+	res.json();
+});
+
+app.get('/stream/stop', (req, res) => {
+    stopStreaming();
+	res.json();
+});
+
 
 app.get('/takePic', (req, res) => {
 	var filename = uuid() + ".jpg"
-	var cmd = "wget http://localhost:8080/?action=snapshot -O " + __dirname + "/pics/" + filename;
-	shell.exec(cmd);
+	var cmd = "wget http://localhost:8080/?action=snapshot -O " + __dirname + "/public/" + filename;
+	
+	shell.exec(cmd, {silent: true}); // This can't be async.. otherwise the streaming stops and there's no image!
 	
 	stopStreaming();
 	
@@ -67,6 +77,21 @@ app.get('/takePic', (req, res) => {
 	
 });
 
+// These last two functions sure aren't safe... and it probably violates everything I've ever learned with programming,
+// but this app won't be exposed outside the local environment.
+app.get('/save/:pic', (req, res) => {
+	console.log("Attempting to save temporary file.");
+	shell.mv(__dirname + "/public/" + req.params.pic, __dirname + '/pics/');
+	res.json();
+});
+
+app.get('/delete/:pic', (req, res) => {
+	console.log("Removing temporary file.");
+	shell.exec("rm ./public/" + req.params.pic, {silent:true});
+	startStreaming();
+	res.json();
+	
+});
 
 
 // Our camera will send new photos to this directory. This will 'watch' that directory so we can start to process everytime a new photo is added.
@@ -116,9 +141,6 @@ watcher.on('add', pathToFile => {
 				console.log("Processing Image " + i + " of " + files.length);
 		  	});
 			
-			// After processing is finished, let's start up mjpg_streamer and raspistill.
-			
-			startStreaming();
 		});
 	}).catch(function(err) {
 		console.log(err);
