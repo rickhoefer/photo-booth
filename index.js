@@ -163,9 +163,9 @@ app.listen(3000, function() {
 function startStreaming() {
   console.log("Attempting to start streaming");
   
-  shell.exec("raspistill --nopreview -w 1920 -h 1080 -q 100 -o /tmp/stream/pic.jpg -tl 1 -t 9999999 -th 0:0:0 -br 60 &", {async:true, silent: true});
+  shell.exec("raspistill --nopreview -w 1920 -h 1080 -q 100 -o ./pic.jpg -tl 1 -t 9999999 -th 0:0:0 -br 60 &", {async:true});
   console.log("raspistill started");
-  shell.exec('LD_LIBRARY_PATH=/usr/local/lib mjpg_streamer -i "input_file.so -f /tmp/stream -n pic.jpg" -o "output_http.so -w /usr/local/www" &', {async:true, silent:true});
+  shell.exec('LD_LIBRARY_PATH=/usr/local/lib mjpg_streamer -i "input_file.so -f ./ -n pic.jpg" -o "output_http.so -w /usr/local/www" &', {async:true});
   console.log("mjpg_streamer started");
 
 }
