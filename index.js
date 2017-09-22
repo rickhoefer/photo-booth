@@ -32,6 +32,7 @@ app.get('/', (req, res) => {
 
 app.get('/pictures', (req, res) => {
 
+	stopStreaming();
 	var pics = fs.readdirSync("./pics").filter(function(file) {
 		return file.includes(".") && !file.includes("DS");
 	});
@@ -39,17 +40,19 @@ app.get('/pictures', (req, res) => {
 	res.render('pics', {
 		pics: pics
 	});
-	
 });	
 	
-app.get('/pics/get/:pic', (req, res) => {
+app.get('/pictures/:pic', (req, res) => {
 
-    var pics = fs.readdirSync("./pics").filter(function(file) {
+	var dir = "./pics/" + req.params.pic + "/";
+	
+	var pics = fs.readdirSync(dir).filter(function(file) {
 		return file.includes(".") && !file.includes("DS");
 	});
 	
-	res.render('pic', {
-		pic: pic
+	res.render('picture', {
+		pics: pics,
+		picture: req.params.pic
 	});
 	
 });
@@ -66,8 +69,9 @@ app.get('/stream/stop', (req, res) => {
 
 
 app.get('/takePic', (req, res) => {
-	var filename = uuid() + ".jpg"
-	var cmd = "wget http://localhost:8080/?action=snapshot -O " + __dirname + "/public/" + filename;
+	var filename = uuid();
+	var extension = ".jpg"
+	var cmd = "wget http://localhost:8080/?action=snapshot -O " + __dirname + "/public/" + filename + extension;
 	
 	shell.exec(cmd, {silent: true}); // This can't be async.. otherwise the streaming stops and there's no image!
 	

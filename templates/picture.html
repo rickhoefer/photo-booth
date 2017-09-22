@@ -3,21 +3,13 @@
 {% block body %}
 
 <div class="album text-muted">
-	
       <div class="container">
-		
-		<h2>
-		  Pictures
-		</h2>
-        <div class="row">
 			{% for p in pics %}
 				<div class="card img-fluid">
-					<a href="/pictures/{{p.substring(0, p.indexOf('.'))}}"><img src="/{{p}}" class="img-fluid" /></a>
+					<a href="/{{picture}}/{{p}}" target="_new"><img src="/{{picture}}/{{p}}" class="img-fluid" /></a>
 				</div>
 			{% endfor %}
-        </div>
-
       </div>
-    </div>
+</div>
 	
 {% endblock %}
