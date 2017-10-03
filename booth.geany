@@ -15,6 +15,7 @@ indent_mode=2
 [project]
 name=booth
 base_path=/home/pi/photo-booth
+description=
 
 [long line marker]
 long_line_behaviour=1
@@ -22,6 +23,10 @@ long_line_column=72
 
 [files]
 current_page=0
+FILE_NAME_0=4424;Javascript;0;EUTF-8;1;1;0;%2Fhome%2Fpi%2Fphoto-booth%2Findex.js;0;4
+FILE_NAME_1=311;HTML;0;EUTF-8;1;1;0;%2Fhome%2Fpi%2Fphoto-booth%2Ftemplates%2Fpicture.html;0;4
+FILE_NAME_2=703;HTML;0;EUTF-8;1;1;0;%2Fhome%2Fpi%2Fphoto-booth%2Ftemplates%2Findex.html;0;4
+FILE_NAME_3=892;HTML;0;EUTF-8;1;1;0;%2Fhome%2Fpi%2Fphoto-booth%2Ftemplates%2Fmain.html;0;4
 
 [VTE]
 last_dir=/home/pi
