@@ -1,15 +1,57 @@
 {% extends "main.html" %}
 
 {% block body %}
+<div class="container">
+	<div class="col-sm-7 float-left images">
 
-<div class="album text-muted">
-      <div class="container">
-			{% for p in pics %}
-				<div class="card img-fluid">
-					<a href="/{{picture}}/{{p}}" target="_new"><img src="/{{picture}}/{{p}}" class="img-fluid" /></a>
-				</div>
-			{% endfor %}
-      </div>
+			   <div class="img-fluid">
+						<a href="/{{picture}}.jpg" target="_new"><img src="/{{picture}}.jpg" class="img-fluid" /></a>
+			   </div>
+				{% for p in pics %}
+					<div class="card img-fluid">
+						<a href="/{{picture}}/{{p}}" target="_new"><img src="/{{picture}}/{{p}}" class="img-fluid" /></a>
+					</div>
+				{% endfor %}
+	</div>
+	 <div class="backgrounds col-sm-3 float-right">
+				{% for b in backgrounds %}
+					<div class="card img-fluid">
+						<img src="/{{b}}" class="img-fluid" />
+					</div>
+				{% endfor %}
+	</div>
 </div>
+
 	
+{% endblock %}
+
+{% block script %}
+
+<script type="text/javascript">
+	<!--
+	
+		$(".backgrounds .card img").on("click", function() {
+		
+			var backgroundFileName = $(this).attr('src');
+
+			var page = "/process/{{picture}}" + backgroundFileName;
+	
+			$.post(page, function( data ) {
+				console.log("Got: " + data.output);
+				var div = $("<div class='card img-fluid'><div>");
+				var a = $("<a href='/" + data.output + "' target='_new'></a>");
+				var img =  $("<img src='/" + data.output + "' class='img-fluid' />")
+				
+				$(a).append(img);
+				$(div).append(a);
+				$(".images").append(div)
+
+			});
+		 
+		});
+
+	
+	-->
+</script>
+
 {% endblock %}

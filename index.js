@@ -15,8 +15,8 @@ var uuid = require('uuid/v1');
 app.set('views',  __dirname + '/templates');
 
 app.use(express.static('public'));
-
 app.use(express.static('pics'));
+app.use(express.static('backgrounds'));
 
 var njk = expressNunjucks(app, {
     watch: true,
@@ -47,12 +47,17 @@ app.get('/pictures/:pic', (req, res) => {
 	var dir = "./pics/" + req.params.pic + "/";
 	
 	var pics = fs.readdirSync(dir).filter(function(file) {
+		return file.includes(".") && !file.includes("DS") && !file.includes("output");
+	});
+	
+	var backgrounds = fs.readdirSync("./backgrounds").filter(function(file) {
 		return file.includes(".") && !file.includes("DS");
 	});
 	
 	res.render('picture', {
 		pics: pics,
-		picture: req.params.pic
+		picture: req.params.pic,
+		backgrounds: backgrounds
 	});
 	
 });
@@ -86,7 +91,9 @@ app.get('/takePic', (req, res) => {
 app.get('/save/:pic', (req, res) => {
 	console.log("Attempting to save temporary file.");
 	shell.mv(__dirname + "/public/" + req.params.pic, __dirname + '/pics/');
-	res.json();
+	mkdir('./pics/' + req.params.pic).then(function(contents) {
+		res.json();
+	});
 });
 
 app.get('/delete/:pic', (req, res) => {
@@ -97,60 +104,35 @@ app.get('/delete/:pic', (req, res) => {
 	
 });
 
-
-// Our camera will send new photos to this directory. This will 'watch' that directory so we can start to process everytime a new photo is added.
-var watcher = chokidar.watch('./pics', {
-  persistent: true,
-  ignoreInitial: true,
-  depth: 0,
-  ignored: '*.png' 
-});
-
+app.post('/process/:pic/:background', (req, res) => {
+	var output = processFile(req.params.pic, req.params.background);
+	res.json({output: output});
+})
 
 
 // This is where the magic happens. 
-watcher.on('add', pathToFile => {
+function processFile(file, backgroundImage) {
+	console.log("Attempting to process!");
+	var dir = "./pics/" + file;
+	var originalPic = dir + ".jpg";
+ 	var background = "./backgrounds/" + backgroundImage;
+	var rgbnum = "#44ff15"
+	var output = dir + "/output.png";
 	
-	if (pathToFile.includes('png')) {
-		return;
-	}
 	
-	var dirname = path.dirname(pathToFile);
-	var basename = path.basename(pathToFile);
-	var fileName = basename.substring(0, basename.indexOf("."));
+	// convert the image and remove the green screen.
+	var cmd = 'convert ' + originalPic + ' -fuzz "1%" -transparent "#44ff15" ' + output;
+	shell.exec(cmd);	
 
-	mkdir('./pics/' + fileName).then(function(contents) {
-		console.log("Folder successfully made.");
-		
-		var fuzzpercent = 50;
-		var destination= dirname + "/" + fileName;
-		var rgbnum = "#44ff15";
-		var output = destination + "/output.png";
-		
-		// Check the backgrounds directory and grab the name of each file.
-		readdir("./backgrounds/", (err, files) => {
-		
-			// convert the image and remove the green screen.
-			var cmd = 'convert ' + pathToFile + ' -fuzz "20%" -transparent "#44ff15" ' + output;
-			shell.exec(cmd);	
+	var outputImage = uuid() + ".png";
+	var outputPath = dir + "/" + outputImage;
+	var background = "./backgrounds/" + backgroundImage;
+	var cmd = 'convert ' + background + ' ' + output + ' -gravity south -composite ' + outputPath	
+	console.log("Processed!");
+	shell.exec(cmd);
 	
-			// Loop through each file in our sample directory and combine them!
-			files.forEach((file, i, arr) => {
-				
-				var outputImage = destination + "/" + i + ".png";
-				var background = "./backgrounds/" + file;
-				var cmd = 'convert ' + background + ' ' + output + ' -gravity south -composite ' + outputImage
-		
-				shell.exec(cmd);
-				console.log("Processing Image " + i + " of " + files.length);
-		  	});
-			
-		});
-	}).catch(function(err) {
-		console.log(err);
-	});
-	
-});
+	return file + "/" + outputImage;
+};
 
 
 
