@@ -80,6 +80,9 @@ app.get('/takePic', (req, res) => {
 	
 	shell.exec(cmd, {silent: true}); // This can't be async.. otherwise the streaming stops and there's no image!
 	
+	// Process the image here
+	var cmd = 'mogrify -modulate 200,300 ' + __dirname + "/public/" + filename + extension;
+	shell.exec(cmd)
 	stopStreaming();
 	
 	res.json({img : filename});
@@ -101,14 +104,12 @@ app.get('/delete/:pic', (req, res) => {
 	shell.exec("rm ./public/" + req.params.pic, {silent:true});
 	startStreaming();
 	res.json();
-	
 });
 
 app.post('/process/:pic/:background', (req, res) => {
 	var output = processFile(req.params.pic, req.params.background);
 	res.json({output: output});
 })
-
 
 // This is where the magic happens. 
 function processFile(file, backgroundImage) {
@@ -119,22 +120,20 @@ function processFile(file, backgroundImage) {
 	var rgbnum = "#44ff15"
 	var output = dir + "/output.png";
 	
-	
-	// convert the image and remove the green screen.
-	var cmd = 'convert ' + originalPic + ' -fuzz "1%" -transparent "#44ff15" ' + output;
+	// convert the image and remove the background
+	var cmd = 'convert ' + originalPic + ' -channel r -separate +channel -fuzz 8% -fill black -opaque black -fill white +opaque black ' + output;
 	shell.exec(cmd);	
 
 	var outputImage = uuid() + ".png";
 	var outputPath = dir + "/" + outputImage;
 	var background = "./backgrounds/" + backgroundImage;
-	var cmd = 'convert ' + background + ' ' + output + ' -gravity south -composite ' + outputPath	
+	
+	var cmd = 'convert '  + background + ' ' + originalPic + ' ' + output + ' -compose over -composite ' + outputPath;
 	console.log("Processed!");
 	shell.exec(cmd);
 	
 	return file + "/" + outputImage;
 };
-
-
 
 
 app.listen(3000, function() {
@@ -144,7 +143,6 @@ app.listen(3000, function() {
 
 function startStreaming() {
   console.log("Attempting to start streaming");
-  
   shell.exec("raspistill --nopreview -w 1920 -h 1080 -q 100 -o /tmp/stream/pic.jpg -tl 1 -t 9999999 -th 0:0:0 -br 60 &", {async:true, silent: true});
   console.log("raspistill started");
   shell.exec('LD_LIBRARY_PATH=/usr/local/lib mjpg_streamer -i "input_file.so -f /tmp/stream -n pic.jpg" -o "output_http.so -w /usr/local/www" &', {async:true, silent:true});

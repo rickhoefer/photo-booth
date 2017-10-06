@@ -11,7 +11,7 @@
 		</h2>
         <div class="row">
 			{% for p in pics %}
-				<div class="card img-fluid">
+				<div class="card img-fluid col-sm-4">
 					<a href="/pictures/{{p.substring(0, p.indexOf('.'))}}"><img src="/{{p}}" class="img-fluid" /></a>
 				</div>
 			{% endfor %}
