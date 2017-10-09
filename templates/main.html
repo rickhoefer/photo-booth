@@ -12,6 +12,9 @@
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom styles for this template -->
      <link href="/css/portfolio-item.css" rel="stylesheet">
+	  {% block css %}
+				
+	  {% endblock %}
   </head>	
   
   <body>
@@ -30,13 +33,13 @@
       <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item active">
-            <a class="nav-link" href="#">Capture <span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="/">Capture <span class="sr-only">(current)</span></a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/pictures">Pictures</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Configuration</a>
+            <a class="nav-link" href="/config">Configuration</a>
           </li>
         </ul>
  
